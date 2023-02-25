@@ -45,26 +45,46 @@ int findCellNumIdx(std::string arg, int startIdx, int stopIdx) {
 	return -1;
 }
 
+// Convert given string to int number with error check
+// TODO If cell start with number but have other symbols?
+bool String2Int(std::string s, int &res) {
+	return std::from_chars(s.data(), s.data() + s.size(), res).ec == std::errc();
+}
+
 int Calculate(std::string s, std::vector<std::vector<Cell>> table, std::map<std::string, int> cols, std::map<int,int> rows) {
 	int res;
-	if (std::from_chars(s.data(), s.data() + s.size(), res).ec == std::errc()) {
-		// TODO If cell start with number but have other symbols?
+
+	if (String2Int(s, res)) {
 		return res;
+
 	} else if (s[0] == '=') {
 		int opIndex = findOpIdx(s);
-		// TODO Check for -1 error return
+		if (opIndex == -1) {
+			std::cerr << "Error: no valid operator present in expression." << std::endl;
+			std::exit(1);
+		}
 
 		int arg1NumIndex = findCellNumIdx(s, 1, opIndex - 1);
 		int arg2NumIndex = findCellNumIdx(s, opIndex + 1, s.size() - 1);
+		if (arg1NumIndex < 1 || arg1NumIndex >= opIndex) {
+			std::cerr << "Error: invalid first argument number in expression " << s << std::endl;
+			std::exit(1);
+		}
+		if (arg2NumIndex <= opIndex || arg2NumIndex >= s.size()) {
+			std::cerr << "Error: invalid second argument number in expression " << s << std::endl;
+			std::exit(1);
+		}
+
 		int arg1Num, arg2Num;
-		if (std::from_chars(s.data() + arg1NumIndex, s.data() + opIndex, arg1Num).ec != std::errc()) {
-			std::cerr << "Error: " << s.substr(arg1NumIndex, opIndex - arg1NumIndex) << " is NaN" << std::endl;
+		if (!String2Int(s.substr(arg1NumIndex, opIndex), arg1Num)) {
+			std::cerr << "Error: " << s.substr(arg1NumIndex, opIndex - arg1NumIndex) << " is not a number" << std::endl;
 			std::exit(1);
 		}
-		if (std::from_chars(s.data() + arg2NumIndex, s.data() + s.size(), arg2Num).ec != std::errc()) {
-			std::cerr << "Error: " << s.substr(arg2NumIndex, opIndex - arg2NumIndex) << " is NaN" << std::endl;
+		if (!String2Int(s.substr(arg2NumIndex), arg2Num)) {
+			std::cerr << "Error: " << s.substr(arg2NumIndex, opIndex - arg2NumIndex) << " is not a number" << std::endl;
 			std::exit(1);
 		}
+
 		s[arg1NumIndex] = s[arg2NumIndex] = '\0';
 		int col1 = cols[s.data() + 1];
 		int col2 = cols[s.data() + opIndex + 1];
@@ -87,11 +107,11 @@ int Calculate(std::string s, std::vector<std::vector<Cell>> table, std::map<std:
 				res = arg1 / arg2;
 				break;
 			default:
-				std::cerr << "Error: Cell is expression containing unknown operation." << std::endl;
+				std::cerr << "Error: No operation specified for operator " << s[opIndex] << std::endl;
 				std::exit(1);
 		}
-
 		return res;
+
 	} else {
 		std::cerr << "Error: Cell is not a number or an expression." << std::endl;
 		std::exit(1);
