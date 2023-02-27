@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(CSVReader VERSION 0.1)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 
@@ -13,7 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 #	set(APPNAME "csvreader.exe")
 #endif()
 
-add_executable(csvreader main.cpp)
+add_executable(csvreader main.cpp Csv.cpp Log.cpp)
 
 # TODO Copy test files
 #add_custom_target(copy-test ALL
@@ -48,8 +48,7 @@ add_test(NAME EmptyFields COMMAND csvreader ${test_dir}/emptyFields.csv)
 set_tests_properties(NotRuns EmptyFields PROPERTIES WILL_FAIL True)
 set_tests_properties(Empty PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*")
 do_test(file "Error: can't open file.*")
-do_test(empty.csv "Error: file.*empty")
-do_test(short.csv "Error: invalid number of fields in.*")
-do_test(long.csv "Error: invalid number of fields in.*")
-do_test(noNum.csv "Error:.*number is invalid.")
-
+do_test(empty.csv "Error: Empty CSV")
+do_test(short.csv "Error: Invalid number of fields in record")
+do_test(long.csv "Error: Invalid number of fields in record")
+do_test(noNum.csv "Error: Row number is not a valid number")
