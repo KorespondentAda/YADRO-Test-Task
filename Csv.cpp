@@ -27,32 +27,20 @@ void Csv::InitHeaders() {
 	InitNumbers();
 }
 
-void Csv::CellParse(Cell &c) {
-	int num;
-	if (c.HasValue()) {
-		return;
-	} else if (Parser::String2Int(c.String(), num)) {
-		c.SetValue(num);
-	} else if (c.String()[0] == '=') {
-		c.SetValue(Evaluate(c.String()));
-	} else {
-		Log::Err("Invalid cell value");
-	}
-}
-
-int Csv::FindArg(std::string s, int start, int stop) {
+int Csv::FindArg(const std::string &s, int start, int stop) {
 	if (start >= stop) {
 		Log::Err("Invalid argument: its start must be lesser than stop");
 	}
 
 	int res;
-	if (Parser::String2Int(Parser::Substring(s, start, stop-1), res)) {
+	if (Parser::String2Int(Parser::Substring(s, start, stop), res)) {
 		return res;
 	}
 
 	int div;
 	for (div = start; div < stop && !std::isdigit(s[div]); div++);
 	if (div == start || div == stop) {
+		std::cout << s << std::endl;
 		Log::Err("Invalid argument: no cell name or number present");
 	}
 	if (rows.count(Parser::Substring(s, div, stop)) == 0 || cols.count(Parser::Substring(s, start, div)) == 0) {
@@ -70,6 +58,19 @@ int Csv::Evaluate(const std::string &s) {
 	int arg1 = FindArg(s, 1, i);
 	int arg2 = FindArg(s, i+1, s.size() + 1);
 	return Operate(s[i], arg1, arg2);
+}
+
+void Csv::CellParse(Cell &c) {
+	int num;
+	if (c.HasValue()) {
+		return;
+	} else if (Parser::String2Int(c.String(), num)) {
+		c.SetValue(num);
+	} else if (c.String()[0] == '=') {
+		c.SetValue(Evaluate(c.String()));
+	} else {
+		Log::Err("Invalid cell value");
+	}
 }
 
 bool Csv::IsOperation(char c) {

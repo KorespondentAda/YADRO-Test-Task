@@ -20,7 +20,7 @@ private:
 	void InitHeaders();
 
 	void CellParse(Cell &c);
-	int FindArg(std::string s, int start, int stop);
+	int FindArg(const std::string &s, int start, int stop);
 
 	int Evaluate(const std::string &s);
 	int Operate(char op, int arg1, int arg2);

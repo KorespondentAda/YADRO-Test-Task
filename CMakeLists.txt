@@ -36,7 +36,7 @@ endfunction()
 #endfunction()
 
 # Process over number of tests
-foreach(num RANGE 1)
+foreach(num RANGE 2)
 	add_test(NAME Result_${num} COMMAND
 		${CMAKE_SOURCE_DIR}/test.sh ${CMAKE_BINARY_DIR}/csvreader ${test_dir}/in${num}.csv ${test_dir}/out${num}.csv)
 endforeach()
