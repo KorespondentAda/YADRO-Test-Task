@@ -1,0 +1,6 @@
+smwt,One,Two,Three
+1,=1+Two1,0,1
+5,-2,=2-One5,1
+2,=One1+Two5,0,2
+114,56,42,-1
+30,=Two114-One2,=One114/Three2,-1234
