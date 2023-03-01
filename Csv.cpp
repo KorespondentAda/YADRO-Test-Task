@@ -4,8 +4,21 @@
 #include "Csv.hpp"
 #include "Parser.hpp"
 
+void Csv::CheckName(std::string name) {
+	if (FindOp(name) >= 0) {
+		Log::Err("Column name can't contain operation symbol");
+	}
+}
+
+void Csv::CheckNumber(int num) {
+	if (num <= 0) {
+		Log::Err("Row number must be positive");
+	}
+}
+
 void Csv::InitNames() {
 	for (int i = 0; i < table[0].size(); i++) {
+		CheckName(table[0][i].String());
 		cols.insert({table[0][i].String(), i});
 	}
 }
@@ -14,6 +27,7 @@ void Csv::InitNumbers() {
 	for (int i = 1; i < table.size(); i++) {
 		int num;
 		if (Parser::String2Int(table[i][0].String(), num)) {
+			CheckNumber(num);
 			rows.insert({table[i][0].String(), i});
 			table[i][0].SetValue(num);
 		} else {
@@ -25,6 +39,14 @@ void Csv::InitNumbers() {
 void Csv::InitHeaders() {
 	InitNames();
 	InitNumbers();
+}
+
+int Csv::FindOp(const std::string &s) {
+	for (int i = 1; i < s.size(); i++) {
+		if (IsOperation(s[i]))
+			return i;
+	}
+	return -1;
 }
 
 int Csv::FindArg(const std::string &s, int start, int stop) {
@@ -53,8 +75,11 @@ int Csv::FindArg(const std::string &s, int start, int stop) {
 }
 
 int Csv::Evaluate(const std::string &s) {
-	int i;
-	for (i = 1; i < s.size() && !IsOperation(s[i]); i++);
+	int opIndex = FindOp(s);
+	if (opIndex < 0) {
+		Log::Err("Expression have no operation symbols");
+	}
+
 	int arg1 = FindArg(s, 1, i);
 	int arg2 = FindArg(s, i+1, s.size() + 1);
 	return Operate(s[i], arg1, arg2);

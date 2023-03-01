@@ -16,6 +16,13 @@ private:
 	bool validated;                          ///< Is CSV already validated
 	int width;                               ///< Fields count in every row
 
+private:
+	/// Check found name for validity
+	void CheckName(std::string name);
+
+	/// Check found row number for validity
+	void CheckNumber(int num);
+
 	/// Initialize \ref cols map
 	void InitNames();
 
@@ -27,6 +34,9 @@ private:
 
 	/// Find out numeric cell value if needed
 	void CellParse(Cell &c);
+
+	/// Search string for operation symbol
+	int FindOp(const std::string &s);
 
 	/// Search string for cell address and retrieve its value
 	int FindArg(const std::string &s, int start, int stop);
