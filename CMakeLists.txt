@@ -30,8 +30,10 @@ do_test(short.csv "Error: Invalid number of fields in record")
 do_test(long.csv "Error: Invalid number of fields in record")
 do_test(noNum.csv "Error: Row number is not a valid number")
 
-# Process over number of tests
-foreach(num RANGE 7)
-	add_test(NAME Result_${num} COMMAND
-		${CMAKE_SOURCE_DIR}/test.sh ${CMAKE_BINARY_DIR}/csvreader ${test_dir}/in${num}.csv ${test_dir}/out${num}.csv)
-endforeach()
+# Process over number of tests if on linux
+if(UNIX)
+	foreach(num RANGE 7)
+		add_test(NAME Result_${num} COMMAND
+			${CMAKE_SOURCE_DIR}/test.sh ${CMAKE_BINARY_DIR}/csvreader ${test_dir}/in${num}.csv ${test_dir}/out${num}.csv)
+	endforeach()
+endif()

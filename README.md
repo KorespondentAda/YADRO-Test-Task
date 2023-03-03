@@ -41,6 +41,11 @@ $ csvreader file.csv
 ```
 Program will print file processing result in standart output, and print occured runtime errors to standart error.
 
+## Testing
+In `tests` directory defined numer of test files for program testing.
+For Linux there is helper bash-script `test.sh` for comparsion of program and expected output.
+Automatic test running can be performed by `ctest` command executed in build directory.
+
 
 # Русский
 ## Задание
@@ -84,4 +89,9 @@ Program will print file processing result in standart output, and print occured 
 $ csvreader file.csv
 ```
 В результате программа выведет в стандартный вывод результат обработки файла, а в стандартный вывод ошибок выведет информацию о возникших ошибках работы, при их наличии.
+
+## Тестирование
+В директории `tests` определено несколько тестовых файлов для проверки работы программы.
+Для Linux есть вспомогательный bash-скрипт `test.sh` для сравнения вывода программы с ожидаемым.
+Автоматический запуск тестов выполняется командой `ctest` в директории сборки.
 
