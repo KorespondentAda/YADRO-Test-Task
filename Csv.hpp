@@ -18,7 +18,7 @@ private:
 
 private:
 	/// Check found name for validity
-	void CheckName(std::string name);
+	void CheckName(const std::string &name);
 
 	/// Check found row number for validity
 	void CheckNumber(int num);

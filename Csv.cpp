@@ -4,8 +4,8 @@
 #include "Csv.hpp"
 #include "Parser.hpp"
 
-void Csv::CheckName(std::string name) {
-	if (FindOp(name) >= 0) {
+void Csv::CheckName(const std::string &name) {
+	if (FindOp(name) != -1) {
 		Log::Err("Column name can't contain operation symbol");
 	}
 }
@@ -42,7 +42,7 @@ void Csv::InitHeaders() {
 }
 
 int Csv::FindOp(const std::string &s) {
-	for (int i = 1; i < s.size(); i++) {
+	for (int i = 0; i < s.size(); i++) {
 		if (IsOperation(s[i]))
 			return i;
 	}
@@ -80,9 +80,9 @@ int Csv::Evaluate(const std::string &s) {
 		Log::Err("Expression have no operation symbols");
 	}
 
-	int arg1 = FindArg(s, 1, i);
-	int arg2 = FindArg(s, i+1, s.size() + 1);
-	return Operate(s[i], arg1, arg2);
+	int arg1 = FindArg(s, 1, opIndex);
+	int arg2 = FindArg(s, opIndex+1, s.size() + 1);
+	return Operate(s[opIndex], arg1, arg2);
 }
 
 void Csv::CellParse(Cell &c) {
